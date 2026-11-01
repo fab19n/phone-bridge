@@ -1,0 +1,25 @@
+:root {
+  --bg: #f7f7f8;
+  --fg: #16161a;
+  --muted: #6b6b76;
+  --surface: #ffffff;
+  --border: #e3e3e8;
+  color-scheme: light dark;
+  font-family: system-ui, "Segoe UI", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111114;
+    --fg: #ececf1;
+    --muted: #9a9aa6;
+    --surface: #1b1b20;
+    --border: #2c2c33;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}

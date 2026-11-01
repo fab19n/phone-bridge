@@ -1,0 +1,9 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Main window. Deliberately no shell:* or fs:* permissions: all adb/scrcpy work happens in Rust (REVIEW B13).",
+  "windows": ["main"],
+  "permissions": [
+    "core:default"
+  ]
+}
