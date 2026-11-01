@@ -20,7 +20,7 @@ serde_json = "1"
 # Stage 2 (streaming core) dependencies. `serde_bytes` is intentionally absent:
 # video goes over a raw-byte Channel, not serde (REVIEW B1).
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time", "process"] }
-rand = "0.9"
+rand = "0.10"
 thiserror = "2"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
