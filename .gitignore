@@ -1,0 +1,13 @@
+# Original scaffold archive — its contents now live in spikes/, companion/, reference/
+phonebridge-scaffold.tar.gz
+
+# Downloaded scrcpy-server / adb binaries are fetched by script, never committed
+app/src-tauri/binaries/*
+!app/src-tauri/binaries/.gitkeep
+
+# Fixtures that tests replay are committed (keep them small, see fixtures/README.md).
+# Large ad-hoc captures go in fixtures/local/.
+fixtures/local/
+
+.DS_Store
+Thumbs.db
