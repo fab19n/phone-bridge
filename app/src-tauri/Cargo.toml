@@ -1,33 +1,33 @@
 [package]
 name = "phonebridge"
-version = "0.1.0"
 description = "Mirror and control an Android phone from Windows"
 authors = ["PhoneBridge"]
-edition = "2024"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
 
 [lib]
 # The `_lib` suffix keeps the lib name distinct from the bin name (cargo#8519 on Windows).
 name = "phonebridge_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[features]
+# Stage 1 validation spikes (docs/DEVELOPMENT_PLAN.md): extra commands and a test page.
+# Built only by `npm run tauri:spikes` / `npm run spikes:build`, never in a normal build.
+spikes = []
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+# `serde_bytes` is intentionally absent: video goes over a raw-byte Channel, not serde (REVIEW B1).
+phonebridge-adb.workspace = true
+phonebridge-scrcpy.workspace = true
+rand = "0.9"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-# Stage 2 (streaming core) dependencies. `serde_bytes` is intentionally absent:
-# video goes over a raw-byte Channel, not serde (REVIEW B1).
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time", "process"] }
-rand = "0.9"
-thiserror = "2"
-tracing = "0.1"
+tauri = { version = "2", features = [] }
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-
-[profile.release]
-codegen-units = 1
-lto = true
-opt-level = 3
-panic = "abort"
-strip = true

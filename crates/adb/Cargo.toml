@@ -1,0 +1,11 @@
+[package]
+name = "phonebridge-adb"
+description = "Client for the adb server protocol on TCP 5037"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true

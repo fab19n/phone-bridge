@@ -1,5 +1,5 @@
 # Downloads the pinned scrcpy-server into app/src-tauri/binaries/ and verifies its SHA-256.
-# The version and hash are read from app/src-tauri/src/scrcpy.rs (SERVER_VERSION and
+# The version and hash are read from crates/scrcpy/src/lib.rs (SERVER_VERSION and
 # SERVER_SHA256), the single source of truth.
 #
 #   powershell -ExecutionPolicy Bypass -File scripts/fetch-scrcpy-server.ps1 [-PrintOnly]
@@ -10,7 +10,7 @@ param([switch]$PrintOnly)
 
 $ErrorActionPreference = 'Stop'
 
-$RustSource = Join-Path $PSScriptRoot '..\app\src-tauri\src\scrcpy.rs'
+$RustSource = Join-Path $PSScriptRoot '..\crates\scrcpy\src\lib.rs'
 $source = Get-Content -Raw $RustSource
 
 function Get-RustConst([string]$Name) {

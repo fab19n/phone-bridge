@@ -1,0 +1,11 @@
+[package]
+name = "phonebridge-scrcpy"
+description = "scrcpy-server v5.0.1 wire protocol: server command, video stream, control messages"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+sha2 = "0.10"
+thiserror.workspace = true
+tokio.workspace = true

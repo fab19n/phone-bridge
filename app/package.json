@@ -10,7 +10,9 @@
     "tauri": "tauri",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
-    "test": "vitest run"
+    "test": "vitest run",
+    "tauri:spikes": "tauri dev --features spikes --config src-tauri/tauri.spikes.conf.json",
+    "spikes:build": "tauri build --no-bundle --features spikes --config src-tauri/tauri.spikes.conf.json"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
