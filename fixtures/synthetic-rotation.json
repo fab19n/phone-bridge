@@ -1,0 +1,24 @@
+{
+  "generator": "scripts/make-synthetic-fixture.mjs",
+  "description": "scrcpy v5.0.1 video stream after the device meta: codec id, then session/config/media packets",
+  "codecId": "h264",
+  "fps": 30,
+  "sessions": [
+    {
+      "width": 480,
+      "height": 1040,
+      "codec": "avc1.640028",
+      "frames": 60,
+      "keyFrames": 2
+    },
+    {
+      "width": 1040,
+      "height": 480,
+      "codec": "avc1.640028",
+      "frames": 60,
+      "keyFrames": 2
+    }
+  ],
+  "totalFrames": 120,
+  "totalBytes": 527422
+}

@@ -15,10 +15,14 @@ updates:
     ignore:
       - dependency-name: "@tauri-apps/*"
         update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      # typescript-eslint 8.72 accepts TypeScript < 6.1 only, so a TypeScript 7 bump fails `npm ci`.
+      # Take TypeScript majors by hand once typescript-eslint supports them.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   # Cargo.lock is committed, so Dependabot also raises lockfile-only minor/patch bumps.
   - package-ecosystem: cargo
-    directory: /app/src-tauri
+    directory: /
     schedule:
       interval: weekly
     groups:

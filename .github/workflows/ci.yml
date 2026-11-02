@@ -1,7 +1,7 @@
 # PhoneBridge CI (Stage 0, DEVELOPMENT_PLAN.md).
 # Runs on windows-latest, the only shipping target:
 #   frontend - tsc --noEmit, eslint, vitest              (app/)
-#   rust     - cargo fmt --check, clippy -D warnings, test (app/src-tauri)
+#   rust     - cargo fmt --check, clippy -D warnings, test (the whole Cargo workspace)
 #   bundle   - `tauri build` NSIS smoke test, installer uploaded as artifact
 # No phone is needed. Protocol tests replay recorded streams (REVIEW.md).
 
@@ -49,9 +49,6 @@ jobs:
   rust:
     name: Rust (fmt, clippy, test)
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: app/src-tauri
     steps:
       - uses: actions/checkout@v7
 
@@ -61,14 +58,17 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: app/src-tauri -> target
+          workspaces: . -> target
 
       # No frontend build needed: without the custom-protocol feature, Tauri uses
       # devUrl and never reads ../dist. The bundle job builds and embeds the frontend.
       # --locked makes cargo fail if Cargo.lock is stale instead of silently rewriting it.
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --locked --all-targets -- -D warnings
-      - run: cargo test --locked --all-targets
+      - run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - run: cargo test --locked --workspace --all-targets
+      # The Stage 1 spike harness is behind a feature; lint and test it too so it can't rot.
+      - run: cargo clippy --locked -p phonebridge --all-targets --features spikes -- -D warnings
+      - run: cargo test --locked -p phonebridge --features spikes
 
   bundle:
     name: Bundle smoke (NSIS)
@@ -90,7 +90,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: app/src-tauri -> target
+          workspaces: . -> target
           # Release-profile artifacts differ from the debug ones the rust job caches.
           key: release
 
@@ -103,6 +103,6 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: phonebridge-nsis-${{ github.sha }}
-          path: app/src-tauri/target/release/bundle/nsis/*.exe
+          path: target/release/bundle/nsis/*.exe
           if-no-files-found: error
           retention-days: 14

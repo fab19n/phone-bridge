@@ -1,0 +1,25 @@
+# PhoneBridge Cargo workspace: the Tauri app plus Tauri-free protocol crates that build and test
+# on their own (no webview needed): crates/adb (adb server protocol) and crates/scrcpy (scrcpy wire format).
+[workspace]
+resolver = "3"
+members = ["app/src-tauri", "crates/adb", "crates/scrcpy"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[workspace.dependencies]
+phonebridge-adb = { path = "crates/adb" }
+phonebridge-scrcpy = { path = "crates/scrcpy" }
+thiserror = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time", "process"] }
+tracing = "0.1"
+
+# Profiles only take effect in the workspace root manifest.
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true

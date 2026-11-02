@@ -1,4 +1,4 @@
-# Original scaffold archive — its contents now live in spikes/, companion/, reference/
+# Original scaffold archive — its contents now live in companion/ and reference/scaffold/
 phonebridge-scaffold.tar.gz
 
 # Downloaded scrcpy-server / adb binaries are fetched by script, never committed
@@ -11,3 +11,6 @@ fixtures/local/
 
 .DS_Store
 Thumbs.db
+
+# Cargo workspace build output (the root Cargo.toml is a workspace)
+/target/
