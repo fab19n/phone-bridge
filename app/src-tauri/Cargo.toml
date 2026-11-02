@@ -23,7 +23,7 @@ tauri-build = { version = "2", features = [] }
 # `serde_bytes` is intentionally absent: video goes over a raw-byte Channel, not serde (REVIEW B1).
 phonebridge-adb.workspace = true
 phonebridge-scrcpy.workspace = true
-rand = "0.9"
+rand = "0.10"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tauri = { version = "2", features = [] }
