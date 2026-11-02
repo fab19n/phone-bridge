@@ -46,10 +46,12 @@ Phase 2 holds most of what makes this feel like a product (settings, error state
 
 ## Part B — Technical review
 
-### B1. 🔴 `serde_bytes` doesn't make Channel payloads binary. Video would ship as JSON number arrays.
+### B1. 🟠 `serde_bytes` doesn't make Channel payloads binary. Video would ship as JSON number arrays. *(Downgraded from 🔴 after the Stage 1 measurement below.)*
 `PhoneBridge_Technical_Spec.md:423-425` says `#[serde(with = "serde_bytes")]` sends `Vec<u8>` as raw binary over a `Channel<VideoEvent>`. A Tauri `Channel<T>` with a serde type is serialized with **serde_json**, and serde_json writes bytes as `[0,1,255,...]`. The frontend code gives this away: it types `data` as `number[] | ArrayBuffer` and handles both (`phase0-tests/src/App.tsx:13-14`, `hooks/useMirror.ts`). A 50 KB packet becomes ~180 KB of JSON, which then has to be parsed on the JS main thread 60 times a second.
 
 **Fix:** use two channels. One is a typed JSON `Channel<VideoEvent>` for metadata, config-changed and stopped events. The other carries video as **raw bytes**: send `tauri::ipc::InvokeResponseBody::Raw(Vec<u8>)` (or `tauri::ipc::Response`) so it arrives as an `ArrayBuffer`. Put a small fixed binary header in front (`u8 flags | u64 pts | u64 recv_us`) and parse it in JS with a `DataView`. **Phase 0 test 0C currently measures the wrong path.** Rewrite it to test raw-byte channels.
+
+> **Measured in Stage 1 (test 0C, `docs/STAGE1_RESULTS.md`):** the finding holds (the bytes do arrive as a JSON number array), but its impact was overstated. At 60 × 50 KB/s, the JSON path still delivered every frame. Compared with raw bytes, it added 1.3–3.4 ms of p95 latency and cost 4.7–9.5× more Rust-side send time, across three 5-second runs. Raw bytes stay the design, for the CPU saving. 60 fps isn't at risk either way, though a 60-second JSON run would firm that up.
 
 ### B2. 🔴 Test 0C measures the time to call `send()`, not delivery
 `phase0-tests/src-tauri/src/main.rs:314-329` times `on_event.send()` on the Rust side. That's just an enqueue. The pass criteria need **Rust-receive → JS-onmessage latency**. Fix: stamp `recv_us` in the payload and compute `performance.timeOrigin + performance.now()` minus that in JS. Report p50/p95/p99 and JS heap growth over 60 s, not 5 s.
@@ -68,6 +70,8 @@ Phase 2 holds most of what makes this feel like a product (settings, error state
 
 ### B6. 🟠 Control inputs can arrive out of order
 `MirrorCanvas.tsx` sends every pointer event as a separate, un-awaited `invoke('send_touch')`. Tauri runs async commands concurrently on a thread pool, so `DOWN, MOVE, MOVE, UP` can reach the socket as `DOWN, UP, MOVE`. The result is stuck touches and broken swipes. Fix: each command should only **push into one `mpsc` queue** owned by a single writer task that serialises scrcpy control messages. Alternatively, use one long-lived control Channel. Add a monotonic sequence number so you can check ordering in tests.
+
+> **Measured in Stage 1 (test 0F):** it's worse than described. Fire-and-forget invokes arrive out of order for **sync** commands too: over four runs, 2–13 inversions per 1,000 events for async commands, 3–5 for sync commands, and 16–96 for batches of 16. So the order is already lost before Rust sees the events, and a Rust-side single writer can't restore it. What passed: the page keeps **one invoke in flight** and sends the events that queue up meanwhile as one batch in the next call (0 inversions in three runs, both for a 1,000-event burst and at ~190 events/s). The Rust single writer stays, for the socket side. The "control Channel" alternative doesn't exist: Tauri Channels only run from Rust to the page.
 
 ### B7. 🟠 Touch messages are built in the wrong coordinate space and miss required fields
 The scrcpy `INJECT_TOUCH_EVENT` message expects the position **plus the video frame size it was computed against** (`screen_width/height`), a pointer id, pressure and action buttons. The server rejects or rescales events whose frame size doesn't match the current one, for example during rotation. `coordinates.ts` maps to a "device size" from metadata that goes stale after the first rotation. It also ignores the `object-fit: contain` letterbox, so taps drift off-target when the window aspect doesn't match. Fix: map to the **current decoded frame size**, account for the letterbox rect, and send that frame size with every event.
@@ -126,7 +130,7 @@ The spec defines `ConnectionState` in Rust (good, D8). The scaffold also keeps a
 - **Licensing:** scrcpy-server is Apache-2.0: ship the licence text and scrcpy's copyright lines (v5.0.1 has no NOTICE file; re-check on each bump). ADB platform-tools redistribution is under the Android SDK licence terms. Many tools, including scrcpy's own Windows release, bundle it, but confirm before a commercial release. Details: `docs/LICENSING.md`.
 
 ### B16. 🔴 The spec and Phase 0 harness parse the pre-v4 wire format *(added in Stage 0)*
-The spec targets scrcpy v4.0, but its packet parsing (`spikes/phase0/src-tauri/src/main.rs:202-264`) is the **v3.x** protocol. v4.0 changed the format, and v5.0.1 (latest stable, 2026-10-08, now pinned) keeps the v4 format:
+The spec targets scrcpy v4.0, but its packet parsing (`reference/scaffold/phase0-tests/src-tauri/src/main.rs:202-264`) is the **v3.x** protocol. v4.0 changed the format, and v5.0.1 (latest stable, 2026-10-08, now pinned) keeps the v4 format:
 - The codec meta is now **only a 4-byte codec id**. Width and height moved to a new **12-byte session packet** (bit 63 set), sent at stream start and again on every rotation or resize.
 - The media header flags shifted: **bit 62 = config, bit 61 = key frame**, and the PTS is 61 bits.
 - The option `send_codec_meta` was renamed to `send_stream_meta`.

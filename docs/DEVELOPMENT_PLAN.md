@@ -34,21 +34,21 @@ Every stage ends with an **exit gate**. Don't start the next stage until the gat
     app/            # Tauri app (src/ React, src-tauri/ Rust)
     companion/      # Android (Stage 8; keep scaffold code parked here)
     protocol/       # video.md, control.md, (later) pairing.md
-    spikes/phase0/  # Stage 1 harness
+    spikes/phase0/  # Stage 1 harness (Stage 1 put the real harness in the app instead; this moved to reference/scaffold/phase0-tests)
     fixtures/       # recorded scrcpy streams
     docs/
   ```
 - [x] Extract `phonebridge-scaffold.tar.gz` and **delete the junk `{phase0-tests…}` brace directories** (REVIEW B15).
 - [x] Generate the real project with `npm create tauri-app@latest` (react-ts), then move the scaffold files in. → `app/`; the React scaffold is parked in `reference/scaffold/` (superseded in Stages 3–4).
 - [x] Fix `Cargo.toml`: add `rand`. Remove `serde_bytes` if you go raw-binary (B1).
-- [x] **Pin scrcpy:** download the release, record the JAR's exact version string, store it in one place, and save the JAR's SHA-256 (B15). → **v5.0.1**: `SERVER_VERSION` and `SERVER_SHA256` in `app/src-tauri/src/scrcpy.rs` are the single source of truth; `scripts/fetch-scrcpy-server.ps1` reads both from that file and verifies the download.
-- [~] Set up CI (GitHub Actions, `windows-latest`): `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`, `tsc --noEmit`, `eslint`, `vitest`, and a `tauri build` smoke test. → `.github/workflows/ci.yml` + Dependabot. Every CI step passes on a clean export of the tree (checked locally 2026-11-02), and `Cargo.lock` is committed. **First GitHub run pending** (needs a remote).
+- [x] **Pin scrcpy:** download the release, record the JAR's exact version string, store it in one place, and save the JAR's SHA-256 (B15). → **v5.0.1**: `SERVER_VERSION` and `SERVER_SHA256` in `crates/scrcpy/src/lib.rs` (moved there from `app/src-tauri/src/scrcpy.rs` in Stage 1) are the single source of truth; `scripts/fetch-scrcpy-server.ps1` reads both from that file and verifies the download.
+- [x] Set up CI (GitHub Actions, `windows-latest`): `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`, `tsc --noEmit`, `eslint`, `vitest`, and a `tauri build` smoke test. → `.github/workflows/ci.yml` + Dependabot. Every CI step passes on a clean export of the tree (checked locally 2026-11-02), and `Cargo.lock` is committed. The first GitHub run, on the push of `ebab51b`, passed all three jobs, including the NSIS build ([run 41336726552](https://github.com/fab19n/phone-bridge/actions/runs/41336726552)). The Stage 1 workspace layout hasn't run on GitHub yet.
 - [x] Write `protocol/video.md` and `protocol/control.md` from the scrcpy source for the pinned version.
 - [x] Check licensing: scrcpy Apache-2.0 NOTICE; ADB redistribution terms. → `docs/LICENSING.md` (open questions for a lawyer included).
 
 **Exit gate:** a clean clone builds in CI and the scrcpy version is pinned. The PRD's remaining decisions (segment sequencing, wedge, open vs closed source) gate **Stage 2**, not Stage 1: the Stage 1 spikes don't depend on them.
 
-> **Status 2026-11-02:** engineering done and committed. Verified locally: the frontend checks and build, `cargo fmt`/`clippy -D warnings`/`test`, and the app running in dev and release builds (the release build enforces the CSP, and IPC goes over `http://ipc.localhost`). Open: the first GitHub CI run (needs a remote) and the PRD decisions that gate Stage 2. Legend: `[x]` done, `[~]` drafted and awaiting a decision or run.
+> **Status 2026-11-02:** engineering done and committed. Verified locally: the frontend checks and build, `cargo fmt`/`clippy -D warnings`/`test`, and the app running in dev and release builds (the release build enforces the CSP, and IPC goes over `http://ipc.localhost`). CI passed on GitHub too (see above), so the exit gate is met. Still open: the PRD decisions, which gate Stage 2. Legend: `[x]` done, `[~]` drafted and awaiting a decision or run.
 
 ---
 
@@ -63,25 +63,27 @@ Same goals as the spec's Phase 0, but each test measures the right thing, plus f
 | 0C | Raw-byte Channel throughput | `InvokeResponseBody::Raw`; **Rust-recv → JS-onmessage** p95 < 5 ms at 60 × 50 KB/s for 60 s; flat JS heap (B1, B2) | Local WebSocket on 127.0.0.1 with a token |
 | 0D | End-to-end | Phone screen live in canvas; config prepended to keyframe; **rotation** survives (B3, B14) | Debug stage by stage |
 | **0E** | Glass-to-glass latency | Film phone + PC with a 240 fps camera (or an on-screen timer); record p50/p95 against the Stage 0 target | Tune bitrate, `max_size`, render path |
-| **0F** | Control ordering | 1,000 rapid `DOWN/MOVE/UP` events through a single-writer queue arrive in order (sequence numbers) (B6) | Move to one control Channel |
+| **0F** | Control ordering | 1,000 rapid `DOWN/MOVE/UP` events through a single-writer queue arrive in order (sequence numbers) (B6) | Serial sender, one invoke in flight (chosen: see the status below) |
 | **0G** | ADB coexistence | With Android Studio's adb server running, PhoneBridge works **without restarting it**, using the direct 5037 protocol (B10) | Choose option (b) or (c) from B10 |
 | **0H** | Packaged sidecar | NSIS build installs (Tauri's default is per-user, `%LOCALAPPDATA%\PhoneBridge`; also test per-machine if Stage 6 picks it); `adb.exe` starts with its DLLs; no console windows (B4, B9) | Ship adb + DLLs as resources, spawn from Rust |
 
-- [ ] **Record 3 fixture streams** (portrait, rotation mid-stream, high-motion) into `fixtures/`. Every later stage tests against these. Keep them small enough to commit (`fixtures/README.md`).
-- [ ] Write a short "Phase 0 results" note in `docs/` with numbers.
+- [~] **Record 3 fixture streams** (portrait, rotation mid-stream, high-motion) into `fixtures/`. Every later stage tests against these. Keep them small enough to commit (`fixtures/README.md`). → Until a phone is available, `fixtures/synthetic-rotation.bin` stands in: real H.264 from ffmpeg in scrcpy v5.0.1 framing, with a rotation (`scripts/make-synthetic-fixture.mjs`). The three real recordings are pending.
+- [x] Write a short "Phase 0 results" note in `docs/` with numbers. → `docs/STAGE1_RESULTS.md`, raw data in `docs/stage1-results.json`.
 
 **Exit gate:** all of 0A–0H pass (or have a chosen fallback), and the measured latency is within the target.
+
+> **Status 2026-11-02:** without a phone, 0B and 0D pass on the synthetic fixture, 0F passes with the serial sender, and 0G passes with no device attached. 0C delivered every frame with a bounded heap, but met p95 < 5 ms only in the first run (3.9 ms, power not recorded); three runs on battery measured 6.7–6.8 ms, so it needs a run on AC. Waiting on a phone: 0A, live 0D, 0E, 0G with a device attached, and the three recorded fixtures (which also complete 0B). 0H is deferred until the adb distribution option is chosen (`docs/LICENSING.md` §3.5). Numbers: `docs/STAGE1_RESULTS.md`. The harness lives in the app behind the `spikes` cargo feature (`npm run tauri:spikes`, or `scripts/run-spikes.mjs` unattended), not in `spikes/phase0`.
 
 ---
 
 ## Stage 2 — Rust streaming core (2 weeks)
 
-Build the `src-tauri` modules from spec §1.3, with these corrections:
-- [ ] `adb/`: an ADB client that talks to the server over **TCP 5037**: host services `host:devices-l`, `host:track-devices`, `host:transport:<serial>` and `host-serial:<serial>:features` (plus `forward:norebind:`, `killforward:` and `host:list-forward` for the forward fallback); device services `sync:` (push), `shell,v2,raw:` (legacy `shell:` fallback) and `localabstract:<name>`. PhoneBridge never runs the `adb` CLI per session. It spawns an adb binary only to *start* a server when none is running (B10; which binary depends on `docs/LICENSING.md` §3). All spawns use `CREATE_NO_WINDOW`.
-- [ ] `scrcpy/server.rs`: push the JAR (check its hash first), launch the server over a `shell,v2,raw:` stream the session owns (drain its stdout/stderr into the logs), and open the sockets with a random `scid`: preferably straight to `localabstract:scrcpy_<scid>` over `host:transport` (no TCP port, nothing to clean up), else a `forward:norebind:tcp:0` fallback removed right after connecting. Close everything on drop (B9, `protocol/video.md` §13).
-- [ ] `scrcpy/video.rs`: connect with retry; parse dummy byte, 64-byte device meta, **4-byte codec id**, then 12-byte headers that are either a **session packet** (bit 63 set: flags, width, height; sent at start and on every rotation/resize) or a media header (bit 62 = config, bit 61 = key frame, 61-bit µs PTS). This is the v4.0+ layout; the spec and Phase 0 harness use the old v3 layout (REVIEW B16, `protocol/video.md` §7–9). Test it with **unit tests against `fixtures/`**. Merge each H.264/H.265 config packet into the next media packet and parse its SPS into the `avc1.PPCCLL` codec string (`protocol/video.md` §10, §13), so config-only packets never reach the frontend. Fixture tests: every key frame sent starts with SPS/PPS, and the codec string is right.
+Build the `src-tauri` modules from spec §1.3, with these corrections. The protocol code lives in the Tauri-free crates `crates/adb` and `crates/scrcpy`, which Stage 1 started; `[~]` means built and tested without a device.
+- [~] `adb/`: an ADB client that talks to the server over **TCP 5037**: host services `host:devices-l`, `host:track-devices`, `host:transport:<serial>` and `host-serial:<serial>:features` (plus `forward:norebind:`, `killforward:` and `host:list-forward` for the forward fallback); device services `sync:` (push), `shell,v2,raw:` (legacy `shell:` fallback) and `localabstract:<name>`. PhoneBridge never runs the `adb` CLI per session. It spawns an adb binary only to *start* a server when none is running (B10; which binary depends on `docs/LICENSING.md` §3). All spawns use `CREATE_NO_WINDOW`. → `crates/adb` (phonebridge-adb). It also addresses devices by transport id and reads the server address the way AOSP's client does (`ADB_SERVER_SOCKET` first). Tested against a fake server and once against the local adb server.
+- [~] `scrcpy/server.rs`: push the JAR (check its hash first), launch the server over a `shell,v2,raw:` stream the session owns (drain its stdout/stderr into the logs), and open the sockets with a random `scid`: preferably straight to `localabstract:scrcpy_<scid>` over `host:transport` (no TCP port, nothing to clean up), else a `forward:norebind:tcp:0` fallback removed right after connecting. Close everything on drop (B9, `protocol/video.md` §13). → The command line is `phonebridge_scrcpy::server`. The connect sequence is spike code in `app/src-tauri/src/spikes/mirror.rs`, not yet run on a device; Stage 2 turns it into the session actor.
+- [~] `scrcpy/video.rs`: connect with retry; parse dummy byte, 64-byte device meta, **4-byte codec id**, then 12-byte headers that are either a **session packet** (bit 63 set: flags, width, height; sent at start and on every rotation/resize) or a media header (bit 62 = config, bit 61 = key frame, 61-bit µs PTS). This is the v4.0+ layout; the spec and Phase 0 harness use the old v3 layout (REVIEW B16, `protocol/video.md` §7–9). Test it with **unit tests against `fixtures/`**. Merge each H.264/H.265 config packet into the next media packet and parse its SPS into the `avc1.PPCCLL` codec string (`protocol/video.md` §10, §13), so config-only packets never reach the frontend. Fixture tests: every key frame sent starts with SPS/PPS, and the codec string is right. → `crates/scrcpy` (video, h264, control). Use `video::PacketReader` in loops that can time out: it is cancel safe, `read_packet` isn't.
 - [ ] `session/`: a `MirrorSession` actor (tokio task) that owns the sockets, the server child and both Channels. `start_mirror` and `stop_mirror` are real commands. Stopping is idempotent.
-- [ ] Video Channel: raw bytes plus a 17-byte header (`flags u8 | pts u64 | recv_us u64`; flags bit 0 = key frame, bit 1 = decoder-config record, whose payload is the codec string plus the session packet's width and height). Decoder-config records travel **in-band**, just before the key frame they configure: Tauri orders messages only within one Channel, so a config sent on another channel could overtake or trail its frames. The JSON Events Channel carries lifecycle only (started, stopped, errors).
+- [x] Video Channel: raw bytes plus a 17-byte header (`flags u8 | pts u64 | recv_us u64`; flags bit 0 = key frame, bit 1 = decoder-config record, whose payload is the codec string plus the session packet's width and height). Decoder-config records travel **in-band**, just before the key frame they configure: Tauri orders messages only within one Channel, so a config sent on another channel could overtake or trail its frames. The JSON Events Channel carries lifecycle only (started, stopped, errors). → `app/src-tauri/src/video_channel.rs` and `app/src/lib/videoChannel.ts`, which test against the same golden bytes.
 - [ ] Logging: `tracing` with a rolling file in the app log dir (needed for support later).
 
 **Exit gate:** `cargo test` parses all fixtures. A real device streams for 30 minutes with no leaked processes or forwards (check `adb forward --list` and Task Manager).
@@ -102,8 +104,8 @@ Build the `src-tauri` modules from spec §1.3, with these corrections:
 
 ## Stage 4 — Input & control (1.5 weeks) → Tech demo
 
-- [ ] `scrcpy/control.rs`: serialise the control messages for the pinned version (touch, scroll, keycode, text, back-or-screen-on, set/get clipboard, reset video, rotate). Golden-byte unit tests against `protocol/control.md`.
-- [ ] A **single writer task** behind an `mpsc` queue. All control commands only enqueue (B6). Use a sync command or one control Channel from JS.
+- [~] `scrcpy/control.rs`: serialise the control messages for the pinned version (touch, scroll, keycode, text, back-or-screen-on, set/get clipboard, reset video, rotate). Golden-byte unit tests against `protocol/control.md`. → Built in Stage 1 as `phonebridge_scrcpy::control`, with golden-byte tests from `protocol/control.md`. Nothing has been sent to a device yet.
+- [ ] Ordered input (B6): the page sends control events through a **serial sender**, with one invoke in flight and the events that queue up meanwhile sent as one batch. Stage 1 test 0F showed that fire-and-forget invokes arrive out of order, even for sync commands. In Rust, one **single writer task** behind an `mpsc` queue owns the control socket.
 - [ ] `lib/coordinates.ts` rewrite: map to the **current frame size**, subtract the letterbox, include `devicePixelRatio`, and send the frame size it mapped against with each touch. Rust forwards that size unchanged, so the server drops touches computed for a stale frame (B7, `protocol/control.md` B7).
 - [ ] `hooks/useControl.ts`: pointer capture; multi-touch is out of scope; a native non-passive wheel listener; keyboard → keycodes with meta-state; printable text → `INJECT_TEXT` in batches; **Ctrl+V → set clipboard + paste**.
 - [ ] `ControlBar.tsx`: Back / Home / Recents / Vol± / Power / Rotate / Screenshot.
@@ -165,7 +167,9 @@ Start this only if the PRD's wedge needs phone-side features ADB can't provide: 
 | Risk | Likelihood | Impact | Mitigation | Stage |
 |---|---|---|---|---|
 | Bundled adb restarts the user's adb server | High | High | Direct 5037 protocol (B10) | 1, 2 |
-| Video sent as JSON makes 60 fps impossible | Certain if not fixed | Critical | Raw-byte channel (B1) | 1 |
+| Video sent as JSON wastes CPU (0C measured +1.3–3.4 ms p95 and 4.7–9.5× the Rust send cost) | Avoided | Low | Raw-byte channel (B1) | 1 |
+| Channel latency on battery misses the 0C target (p95 6.7 ms vs 3.9 ms; the first run's power state wasn't recorded) | Medium | Low (under 10% of the 70 ms budget) | Re-run 0C on AC; give each power state its own criterion | 1 |
+| Control events reorder between the page and Rust | Certain with fire-and-forget invokes (0F) | High | Serial sender, one invoke in flight (B6) | 4 |
 | DLL layout works in dev but breaks when installed | High | High | Test 0H in Stage 1 (B4) | 1 |
 | Product looks like a free scrcpy GUI | High | Critical | PRD wedge before Stage 2 (A1) | 0 |
 | Encoder profile/level ≠ hard-coded codec string | Medium | High | Parse SPS (B3) | 3 |
