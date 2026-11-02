@@ -155,9 +155,17 @@ try {
   };
   await send("Runtime.enable");
   await send("Log.enable");
+  /** What the page retains after a forced full GC, in MB: equal before and after a run means no leak (0C). */
+  const retainedHeap = async () => {
+    await send("HeapProfiler.collectGarbage");
+    const { result } = await send("Runtime.getHeapUsage");
+    const mb = (bytes) => (bytes === undefined ? null : Math.round((bytes / 1048576) * 10) / 10);
+    return { usedMb: mb(result.usedSize), arrayBufferMb: mb(result.backingStorageSize) };
+  };
 
   for (let i = 0; i < 60 && !(await evaluate("typeof window.__spikes === 'object'")); i++) await delay(500);
   const results = { exe, power, build: await evaluate("navigator.userAgent") };
+  const heapBefore = await retainedHeap().catch((e) => ({ error: String(e) }));
   if (only) {
     for (const name of only) {
       process.stderr.write(`running ${name}…\n`);
@@ -167,6 +175,7 @@ try {
     process.stderr.write("running every phone-free spike (about 90 s)…\n");
     Object.assign(results, await evaluate("window.__spikes.runAll()"));
   }
+  results.retainedHeap = { before: heapBefore, after: await retainedHeap().catch((e) => ({ error: String(e) })) };
   results.pageErrors = problems;
   ws.close();
   stop();

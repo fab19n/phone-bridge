@@ -4,8 +4,8 @@ Mirror and control an Android phone from a Windows PC over USB.
 Tauri v2 desktop app (Rust backend, React + WebCodecs frontend) driving the unmodified
 [scrcpy](https://github.com/Genymobile/scrcpy) server over ADB.
 
-> Status: **Stage 1 (validation spikes)**: the phone-free spikes pass, except 0C, which misses its target on battery
-> (p95 6.7 ms vs < 5 ms) and needs a run on AC. 0A, live 0D, 0E and 0G with a device need a phone; 0H waits on the
+> Status: **Stage 1 (validation spikes)**: the phone-free spikes pass on AC power. On battery, 0C runs over its target
+> (p95 6.7–6.8 ms vs < 5 ms; 3.0–3.2 ms on AC). 0A, live 0D, 0E and 0G with a device need a phone; 0H waits on the
 > adb distribution decision.
 > See [docs/STAGE1_RESULTS.md](docs/STAGE1_RESULTS.md) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
 

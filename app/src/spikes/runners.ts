@@ -61,11 +61,15 @@ export async function runThroughput(options: ThroughputOptions) {
   const expected = options.fps * options.seconds;
   const latencyMs: number[] = [];
   const gapsMs: number[] = [];
+  // Arrival gaps over 50 ms (3 frames at 60 fps), timed from the first heap sample so they line up with
+  // the 1-second samples: a stall at the moment the heap drops points at garbage collection.
+  const stalls: { atS: number; gapMs: number }[] = [];
   let received = 0;
   let outOfOrder = 0;
   let wrongSize = 0;
   let lastSeq = -1;
   let lastArrival = 0;
+  const t0 = performance.now();
   const heap = [heapMb()];
   const sampler = setInterval(() => heap.push(heapMb()), 1000);
   let finish = () => {};
@@ -85,7 +89,11 @@ export async function runThroughput(options: ThroughputOptions) {
       [seq, recvUs, size] = [message.seq, message.recvUs, message.data.length];
     }
     latencyMs.push((now - recvUs) / 1000);
-    if (lastArrival) gapsMs.push(arrival - lastArrival);
+    if (lastArrival) {
+      const gap = arrival - lastArrival;
+      gapsMs.push(gap);
+      if (gap > 50) stalls.push({ atS: Math.round((lastArrival - t0) / 100) / 10, gapMs: Math.round(gap) });
+    }
     lastArrival = arrival;
     if (seq !== lastSeq + 1) outOfOrder++;
     lastSeq = seq;
@@ -111,6 +119,7 @@ export async function runThroughput(options: ThroughputOptions) {
       wallMs: Math.round(performance.now() - started),
       latencyMs: summarize(latencyMs),
       interArrivalMs: summarize(gapsMs),
+      stalls,
       heapMb: {
         start: samples[0] ?? null,
         max: samples.length ? Math.max(...samples) : null,

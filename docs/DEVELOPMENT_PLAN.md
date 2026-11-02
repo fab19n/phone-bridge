@@ -72,7 +72,7 @@ Same goals as the spec's Phase 0, but each test measures the right thing, plus f
 
 **Exit gate:** all of 0A–0H pass (or have a chosen fallback), and the measured latency is within the target.
 
-> **Status 2026-11-02:** without a phone, 0B and 0D pass on the synthetic fixture, 0F passes with the serial sender, and 0G passes with no device attached. 0C delivered every frame with a bounded heap, but met p95 < 5 ms only in the first run (3.9 ms, power not recorded); three runs on battery measured 6.7–6.8 ms, so it needs a run on AC. Waiting on a phone: 0A, live 0D, 0E, 0G with a device attached, and the three recorded fixtures (which also complete 0B). 0H is deferred until the adb distribution option is chosen (`docs/LICENSING.md` §3.5). Numbers: `docs/STAGE1_RESULTS.md`. The harness lives in the app behind the `spikes` cargo feature (`npm run tauri:spikes`, or `scripts/run-spikes.mjs` unattended), not in `spikes/phase0`.
+> **Status 2026-11-02:** without a phone, 0B and 0D pass on the synthetic fixture, 0F passes with the serial sender, and 0G passes with no device attached. 0C passes on AC: every frame delivered in order with a flat retained heap, and p95 3.0–3.2 ms in four of five runs (the fifth was slower throughout, at 5.3 ms, with one 333 ms stall). On battery it measured 6.7–6.8 ms in three runs, over the 5 ms target but under a tenth of the 70 ms budget. Waiting on a phone: 0A, live 0D, 0E, 0G with a device attached, and the three recorded fixtures (which also complete 0B). 0H is deferred until the adb distribution option is chosen (`docs/LICENSING.md` §3.5). Numbers: `docs/STAGE1_RESULTS.md`. The harness lives in the app behind the `spikes` cargo feature (`npm run tauri:spikes`, or `scripts/run-spikes.mjs` unattended), not in `spikes/phase0`.
 
 ---
 
@@ -86,7 +86,7 @@ Build the `src-tauri` modules from spec §1.3, with these corrections. The proto
 - [x] Video Channel: raw bytes plus a 17-byte header (`flags u8 | pts u64 | recv_us u64`; flags bit 0 = key frame, bit 1 = decoder-config record, whose payload is the codec string plus the session packet's width and height). Decoder-config records travel **in-band**, just before the key frame they configure: Tauri orders messages only within one Channel, so a config sent on another channel could overtake or trail its frames. The JSON Events Channel carries lifecycle only (started, stopped, errors). → `app/src-tauri/src/video_channel.rs` and `app/src/lib/videoChannel.ts`, which test against the same golden bytes.
 - [ ] Logging: `tracing` with a rolling file in the app log dir (needed for support later).
 
-**Exit gate:** `cargo test` parses all fixtures. A real device streams for 30 minutes with no leaked processes or forwards (check `adb forward --list` and Task Manager).
+**Exit gate:** `cargo test` parses all fixtures. A real device streams for 30 minutes with no leaked processes or forwards (check `adb forward --list` and Task Manager), the page's heap after a forced GC ends no bigger than it started, and every arrival gap over 50 ms is logged (0C saw one of 333 ms).
 
 ---
 
@@ -168,7 +168,8 @@ Start this only if the PRD's wedge needs phone-side features ADB can't provide: 
 |---|---|---|---|---|
 | Bundled adb restarts the user's adb server | High | High | Direct 5037 protocol (B10) | 1, 2 |
 | Video sent as JSON wastes CPU (0C measured +1.3–3.4 ms p95 and 4.7–9.5× the Rust send cost) | Avoided | Low | Raw-byte channel (B1) | 1 |
-| Channel latency on battery misses the 0C target (p95 6.7 ms vs 3.9 ms; the first run's power state wasn't recorded) | Medium | Low (under 10% of the 70 ms budget) | Re-run 0C on AC; give each power state its own criterion | 1 |
+| Channel latency on battery misses the 0C target (p95 6.7–6.8 ms on battery vs 3.0–3.2 ms on AC) | Certain on battery | Low (under 10% of the 70 ms budget) | Keep < 5 ms as the AC criterion; judge battery by 0E's glass-to-glass result, measured on both power states | 1 |
+| Occasional Channel stall (one 333 ms gap in nine 60-second runs; cause unknown) | Low | Medium (a visible freeze) | The runner logs gaps over 50 ms; Stage 2's 30-minute stream watches for them | 2 |
 | Control events reorder between the page and Rust | Certain with fire-and-forget invokes (0F) | High | Serial sender, one invoke in flight (B6) | 4 |
 | DLL layout works in dev but breaks when installed | High | High | Test 0H in Stage 1 (B4) | 1 |
 | Product looks like a free scrcpy GUI | High | Critical | PRD wedge before Stage 2 (A1) | 0 |
