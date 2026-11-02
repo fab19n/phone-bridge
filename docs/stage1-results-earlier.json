@@ -1,0 +1,995 @@
+{
+  "note": "Earlier runs from 2026-11-02, kept as evidence for docs/STAGE1_RESULTS.md. firstRun: power state not recorded; its ordering predates the serial-sender variants. orderingRun: 0F only, the first run with the serial sender (power not recorded). batteryRun: a full run on battery, checked right after it. batteryRepeat: 0C raw repeated on battery. The final run is docs/stage1-results.json.",
+  "firstRun": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "webcodecs": {
+      "available": true,
+      "results": [
+        {
+          "codec": "avc1.42E01F",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.42E01F",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.4D401F",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.4D401F",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640028",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640028",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640029",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640029",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.64002A",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.64002A",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640033",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640033",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "hvc1.1.6.L120.90",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": false
+        },
+        {
+          "codec": "hvc1.1.6.L120.90",
+          "hardwareAcceleration": "no-preference",
+          "supported": false
+        },
+        {
+          "codec": "av01.0.08M.08",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "av01.0.08M.08",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        }
+      ]
+    },
+    "throughputRaw": {
+      "mode": "raw",
+      "fps": 60,
+      "payloadBytes": 50000,
+      "seconds": 60,
+      "expected": 3600,
+      "received": 3600,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 59994,
+      "latencyMs": {
+        "n": 3600,
+        "mean": 3.2,
+        "p50": 3.12,
+        "p95": 3.87,
+        "p99": 4.72,
+        "max": 11.31
+      },
+      "interArrivalMs": {
+        "n": 3599,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 17.5,
+        "p99": 18.6,
+        "max": 53.6
+      },
+      "heapMb": {
+        "start": 1.9,
+        "max": 47.9,
+        "end": 13.4
+      },
+      "rust": {
+        "mode": "raw",
+        "fps": 60,
+        "payloadBytes": 50000,
+        "framesSent": 3600,
+        "elapsedMs": 59983,
+        "sendUsP50": 76,
+        "sendUsP95": 152,
+        "sendUsMax": 3532,
+        "lateFrames": 1
+      }
+    },
+    "throughputRawBurst": {
+      "mode": "raw",
+      "fps": 60,
+      "payloadBytes": 200000,
+      "seconds": 10,
+      "expected": 600,
+      "received": 600,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 9991,
+      "latencyMs": {
+        "n": 600,
+        "mean": 4.76,
+        "p50": 4.7,
+        "p95": 5.37,
+        "p99": 5.96,
+        "max": 12.19
+      },
+      "interArrivalMs": {
+        "n": 599,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 17.5,
+        "p99": 18.1,
+        "max": 49.7
+      },
+      "heapMb": {
+        "start": 13.4,
+        "max": 30.8,
+        "end": 7.6
+      },
+      "rust": {
+        "mode": "raw",
+        "fps": 60,
+        "payloadBytes": 200000,
+        "framesSent": 600,
+        "elapsedMs": 9983,
+        "sendUsP50": 102,
+        "sendUsP95": 187,
+        "sendUsMax": 1754,
+        "lateFrames": 0
+      }
+    },
+    "throughputJson": {
+      "mode": "json",
+      "fps": 60,
+      "payloadBytes": 50000,
+      "seconds": 5,
+      "expected": 300,
+      "received": 300,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 4991,
+      "latencyMs": {
+        "n": 300,
+        "mean": 4.55,
+        "p50": 4.47,
+        "p95": 5.12,
+        "p99": 5.47,
+        "max": 8.69
+      },
+      "interArrivalMs": {
+        "n": 299,
+        "mean": 16.67,
+        "p50": 16.6,
+        "p95": 17.6,
+        "p99": 20.2,
+        "max": 22.7
+      },
+      "heapMb": {
+        "start": 7.6,
+        "max": 22.3,
+        "end": 13.6
+      },
+      "rust": {
+        "mode": "json",
+        "fps": 60,
+        "payloadBytes": 50000,
+        "framesSent": 300,
+        "elapsedMs": 4984,
+        "sendUsP50": 359,
+        "sendUsP95": 469,
+        "sendUsMax": 3236,
+        "lateFrames": 0
+      }
+    },
+    "ordering": {
+      "count": 1000,
+      "variants": [
+        {
+          "variant": "async",
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 425,
+          "received": 1000,
+          "inversions": 6,
+          "maxDisplacement": 7,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              7,
+              1
+            ],
+            [
+              7,
+              2
+            ],
+            [
+              9,
+              3
+            ],
+            [
+              11,
+              4
+            ],
+            [
+              298,
+              297
+            ]
+          ]
+        },
+        {
+          "variant": "sync",
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 436,
+          "received": 1000,
+          "inversions": 4,
+          "maxDisplacement": 4,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              5,
+              1
+            ],
+            [
+              6,
+              2
+            ],
+            [
+              7,
+              3
+            ],
+            [
+              8,
+              4
+            ]
+          ]
+        },
+        {
+          "variant": "batched",
+          "invokes": 63,
+          "failedInvokes": 0,
+          "totalMs": 38,
+          "received": 1000,
+          "inversions": 96,
+          "maxDisplacement": 207,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              127,
+              16
+            ],
+            [
+              127,
+              17
+            ],
+            [
+              127,
+              18
+            ],
+            [
+              127,
+              19
+            ],
+            [
+              127,
+              20
+            ]
+          ]
+        }
+      ]
+    },
+    "pageErrors": []
+  },
+  "orderingRun": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "ordering": {
+      "count": 1000,
+      "variants": [
+        {
+          "variant": "async",
+          "events": 1000,
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 522,
+          "received": 1000,
+          "inversions": 2,
+          "maxDisplacement": 2,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        },
+        {
+          "variant": "sync",
+          "events": 1000,
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 487,
+          "received": 1000,
+          "inversions": 4,
+          "maxDisplacement": 8,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              5,
+              1
+            ],
+            [
+              9,
+              2
+            ],
+            [
+              11,
+              3
+            ],
+            [
+              12,
+              4
+            ]
+          ]
+        },
+        {
+          "variant": "batched",
+          "events": 1000,
+          "invokes": 63,
+          "failedInvokes": 0,
+          "totalMs": 32,
+          "received": 1000,
+          "inversions": 48,
+          "maxDisplacement": 63,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              79,
+              16
+            ],
+            [
+              79,
+              17
+            ],
+            [
+              79,
+              18
+            ],
+            [
+              79,
+              19
+            ],
+            [
+              79,
+              20
+            ]
+          ]
+        },
+        {
+          "variant": "serial",
+          "events": 1000,
+          "invokes": 2,
+          "failedInvokes": 0,
+          "totalMs": 3,
+          "received": 1000,
+          "inversions": 0,
+          "maxDisplacement": 0,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": []
+        },
+        {
+          "variant": "serialPaced",
+          "events": 300,
+          "invokes": 300,
+          "failedInvokes": 0,
+          "totalMs": 1548,
+          "received": 300,
+          "inversions": 0,
+          "maxDisplacement": 0,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": []
+        }
+      ]
+    },
+    "pageErrors": []
+  },
+  "batteryRun": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "battery (checked right after this run; scripts/run-spikes.mjs records it automatically from now on)",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "started": "2026-11-01T22:14:25.415Z",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "webcodecs": {
+      "available": true,
+      "results": [
+        {
+          "codec": "avc1.42E01F",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.42E01F",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.4D401F",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.4D401F",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640028",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640028",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640029",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640029",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.64002A",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.64002A",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640033",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "avc1.640033",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        },
+        {
+          "codec": "hvc1.1.6.L120.90",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": false
+        },
+        {
+          "codec": "hvc1.1.6.L120.90",
+          "hardwareAcceleration": "no-preference",
+          "supported": false
+        },
+        {
+          "codec": "av01.0.08M.08",
+          "hardwareAcceleration": "prefer-hardware",
+          "supported": true
+        },
+        {
+          "codec": "av01.0.08M.08",
+          "hardwareAcceleration": "no-preference",
+          "supported": true
+        }
+      ]
+    },
+    "replay": {
+      "rust": {
+        "codec": "H264",
+        "sessions": [
+          [
+            480,
+            1040
+          ],
+          [
+            1040,
+            480
+          ]
+        ],
+        "decoderConfigs": [
+          "avc1.640028",
+          "avc1.640028"
+        ],
+        "frames": 120,
+        "keyFrames": 4,
+        "payloadBytes": 525930,
+        "messagesSent": 122,
+        "elapsedMs": 3
+      },
+      "page": {
+        "messages": 122,
+        "frames": 120,
+        "decoded": 120,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 480,
+            "height": 1040,
+            "codec": "avc1.640028"
+          },
+          {
+            "width": 1040,
+            "height": 480,
+            "codec": "avc1.640028"
+          }
+        ],
+        "frameSizes": [
+          "480x1040",
+          "1040x480"
+        ],
+        "canvas": "1040x480",
+        "decodeMs": {
+          "n": 120,
+          "mean": 114.54,
+          "p50": 99.6,
+          "p95": 195.2,
+          "p99": 201.5,
+          "max": 204.5
+        },
+        "deliveryMs": {
+          "n": 122,
+          "mean": 108.34,
+          "p50": 109.34,
+          "p95": 109.98,
+          "p99": 110.08,
+          "max": 110.13
+        }
+      }
+    },
+    "replayRealtime": {
+      "rust": {
+        "codec": "H264",
+        "sessions": [
+          [
+            480,
+            1040
+          ],
+          [
+            1040,
+            480
+          ]
+        ],
+        "decoderConfigs": [
+          "avc1.640028",
+          "avc1.640028"
+        ],
+        "frames": 120,
+        "keyFrames": 4,
+        "payloadBytes": 525930,
+        "messagesSent": 122,
+        "elapsedMs": 3971
+      },
+      "page": {
+        "messages": 122,
+        "frames": 120,
+        "decoded": 120,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 480,
+            "height": 1040,
+            "codec": "avc1.640028"
+          },
+          {
+            "width": 1040,
+            "height": 480,
+            "codec": "avc1.640028"
+          }
+        ],
+        "frameSizes": [
+          "480x1040",
+          "1040x480"
+        ],
+        "canvas": "1040x480",
+        "decodeMs": {
+          "n": 120,
+          "mean": 1.01,
+          "p50": 0.7,
+          "p95": 1.2,
+          "p99": 9.2,
+          "max": 20.2
+        },
+        "deliveryMs": {
+          "n": 122,
+          "mean": 4.38,
+          "p50": 4.32,
+          "p95": 6.09,
+          "p99": 7.37,
+          "max": 10.22
+        }
+      }
+    },
+    "throughputRaw": {
+      "mode": "raw",
+      "fps": 60,
+      "payloadBytes": 50000,
+      "seconds": 60,
+      "expected": 3600,
+      "received": 3600,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 59994,
+      "latencyMs": {
+        "n": 3600,
+        "mean": 5.7,
+        "p50": 5.81,
+        "p95": 6.73,
+        "p99": 7.64,
+        "max": 19.51
+      },
+      "interArrivalMs": {
+        "n": 3599,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 17.8,
+        "p99": 19,
+        "max": 31.5
+      },
+      "heapMb": {
+        "start": 4.3,
+        "max": 47.2,
+        "end": 11.7
+      },
+      "rust": {
+        "mode": "raw",
+        "fps": 60,
+        "payloadBytes": 50000,
+        "framesSent": 3600,
+        "elapsedMs": 59983,
+        "sendUsP50": 72,
+        "sendUsP95": 154,
+        "sendUsMax": 3610,
+        "lateFrames": 0
+      }
+    },
+    "throughputRawBurst": {
+      "mode": "raw",
+      "fps": 60,
+      "payloadBytes": 200000,
+      "seconds": 10,
+      "expected": 600,
+      "received": 600,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 9997,
+      "latencyMs": {
+        "n": 600,
+        "mean": 6.96,
+        "p50": 7.25,
+        "p95": 8.69,
+        "p99": 9.62,
+        "max": 13.09
+      },
+      "interArrivalMs": {
+        "n": 599,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 17.9,
+        "p99": 18.7,
+        "max": 21.4
+      },
+      "heapMb": {
+        "start": 11.7,
+        "max": 30.7,
+        "end": 8.8
+      },
+      "rust": {
+        "mode": "raw",
+        "fps": 60,
+        "payloadBytes": 200000,
+        "framesSent": 600,
+        "elapsedMs": 9983,
+        "sendUsP50": 123,
+        "sendUsP95": 201,
+        "sendUsMax": 699,
+        "lateFrames": 0
+      }
+    },
+    "throughputJson": {
+      "mode": "json",
+      "fps": 60,
+      "payloadBytes": 50000,
+      "seconds": 5,
+      "expected": 300,
+      "received": 300,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 4998,
+      "latencyMs": {
+        "n": 300,
+        "mean": 8.72,
+        "p50": 8.87,
+        "p95": 10.1,
+        "p99": 11.1,
+        "max": 11.25
+      },
+      "interArrivalMs": {
+        "n": 299,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 18.4,
+        "p99": 19.1,
+        "max": 19.4
+      },
+      "heapMb": {
+        "start": 8.8,
+        "max": 31.8,
+        "end": 23.3
+      },
+      "rust": {
+        "mode": "json",
+        "fps": 60,
+        "payloadBytes": 50000,
+        "framesSent": 300,
+        "elapsedMs": 4984,
+        "sendUsP50": 684,
+        "sendUsP95": 892,
+        "sendUsMax": 2878,
+        "lateFrames": 0
+      }
+    },
+    "ordering": {
+      "count": 1000,
+      "variants": [
+        {
+          "variant": "async",
+          "events": 1000,
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 444,
+          "received": 1000,
+          "inversions": 12,
+          "maxDisplacement": 19,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              3,
+              1
+            ],
+            [
+              9,
+              2
+            ],
+            [
+              27,
+              26
+            ],
+            [
+              29,
+              28
+            ],
+            [
+              153,
+              152
+            ]
+          ]
+        },
+        {
+          "variant": "sync",
+          "events": 1000,
+          "invokes": 1000,
+          "failedInvokes": 0,
+          "totalMs": 396,
+          "received": 1000,
+          "inversions": 5,
+          "maxDisplacement": 14,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              6,
+              1
+            ],
+            [
+              8,
+              2
+            ],
+            [
+              8,
+              3
+            ],
+            [
+              10,
+              4
+            ],
+            [
+              19,
+              5
+            ]
+          ]
+        },
+        {
+          "variant": "batched",
+          "events": 1000,
+          "invokes": 63,
+          "failedInvokes": 0,
+          "totalMs": 30,
+          "received": 1000,
+          "inversions": 16,
+          "maxDisplacement": 47,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": [
+            [
+              79,
+              32
+            ],
+            [
+              79,
+              33
+            ],
+            [
+              79,
+              34
+            ],
+            [
+              79,
+              35
+            ],
+            [
+              79,
+              36
+            ]
+          ]
+        },
+        {
+          "variant": "serial",
+          "events": 1000,
+          "invokes": 2,
+          "failedInvokes": 0,
+          "totalMs": 3,
+          "received": 1000,
+          "inversions": 0,
+          "maxDisplacement": 0,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": []
+        },
+        {
+          "variant": "serialPaced",
+          "events": 300,
+          "invokes": 300,
+          "failedInvokes": 0,
+          "totalMs": 1578,
+          "received": 300,
+          "inversions": 0,
+          "maxDisplacement": 0,
+          "missing": 0,
+          "duplicates": 0,
+          "examples": []
+        }
+      ]
+    },
+    "adb": {
+      "server": "127.0.0.1:5037",
+      "version": 41,
+      "devices": [],
+      "trackUpdates": [
+        []
+      ],
+      "adbPidsBefore": [
+        42004
+      ],
+      "adbPidsAfter": [
+        42004
+      ],
+      "serverUntouched": true,
+      "errors": []
+    },
+    "finished": "2026-11-01T22:15:49.961Z",
+    "pageErrors": []
+  },
+  "batteryRepeat": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "battery",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "throughputRaw": {
+      "mode": "raw",
+      "fps": 60,
+      "payloadBytes": 50000,
+      "seconds": 60,
+      "expected": 3600,
+      "received": 3600,
+      "outOfOrder": 0,
+      "wrongSize": 0,
+      "wallMs": 59992,
+      "latencyMs": {
+        "n": 3600,
+        "mean": 5.69,
+        "p50": 5.84,
+        "p95": 6.79,
+        "p99": 7.94,
+        "max": 22.67
+      },
+      "interArrivalMs": {
+        "n": 3599,
+        "mean": 16.67,
+        "p50": 16.7,
+        "p95": 17.9,
+        "p99": 19,
+        "max": 34.3
+      },
+      "heapMb": {
+        "start": 1.9,
+        "max": 48,
+        "end": 13.5
+      },
+      "rust": {
+        "mode": "raw",
+        "fps": 60,
+        "payloadBytes": 50000,
+        "framesSent": 3600,
+        "elapsedMs": 59983,
+        "sendUsP50": 70,
+        "sendUsP95": 154,
+        "sendUsMax": 1155,
+        "lateFrames": 0
+      }
+    },
+    "pageErrors": []
+  }
+}

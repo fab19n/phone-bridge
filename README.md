@@ -4,19 +4,21 @@ Mirror and control an Android phone from a Windows PC over USB.
 Tauri v2 desktop app (Rust backend, React + WebCodecs frontend) driving the unmodified
 [scrcpy](https://github.com/Genymobile/scrcpy) server over ADB.
 
-> Status: **Stage 0 (foundations) done locally**; the first GitHub CI run is pending. Next: Stage 1 validation spikes.
-> See [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
+> Status: **Stage 1 (validation spikes)**: the phone-free spikes pass, except 0C, which misses its target on battery
+> (p95 6.7 ms vs < 5 ms) and needs a run on AC. 0A, live 0D, 0E and 0G with a device need a phone; 0H waits on the
+> adb distribution decision.
+> See [docs/STAGE1_RESULTS.md](docs/STAGE1_RESULTS.md) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
 
 ## Repository layout
 
 | Path | What |
 |---|---|
 | `app/` | The Tauri app: `src/` (React), `src-tauri/` (Rust) |
+| `crates/` | Tauri-free Rust crates: `adb` (adb server protocol), `scrcpy` (scrcpy v5.0.1 wire protocol) |
 | `protocol/` | Wire formats PhoneBridge implements: `video.md`, `control.md` |
-| `spikes/phase0/` | Stage 1 validation harness (from the original scaffold, not yet buildable) |
 | `fixtures/` | Recorded scrcpy streams for deterministic tests |
 | `companion/` | Android companion app (parked until Stage 8) |
-| `reference/scaffold/` | Original React scaffold, kept for reference; superseded by `app/` in Stages 3–4 |
+| `reference/scaffold/` | The original scaffold (React app, Phase 0 harness), kept for reference only |
 | `docs/` | Spec review, development plan, PRD, licensing |
 | `scripts/` | Developer scripts (e.g. fetching the pinned scrcpy-server) |
 
@@ -37,7 +39,7 @@ npm run tauri dev
 ```
 
 `tauri dev` loads the Vite dev server directly, so **no CSP is applied**. To check CSP or IPC changes, build with the
-custom protocol instead: `npm run tauri build -- --debug --no-bundle`, then run `src-tauri/target/debug/phonebridge.exe`
+custom protocol instead: `npm run tauri build -- --debug --no-bundle`, then run `target/debug/phonebridge.exe` (repo root)
 (right-click → Inspect opens DevTools). The next `tauri dev` turns that binary back into a dev build.
 
 Before pushing, run the checks CI runs:
@@ -45,11 +47,24 @@ Before pushing, run the checks CI runs:
 ```bash
 cd app
 npm run typecheck && npm run lint && npm test
-cd src-tauri
-cargo fmt --all -- --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked --all-targets
+cd ..
+cargo fmt --all -- --check && cargo clippy --locked --workspace --all-targets -- -D warnings && cargo test --locked --workspace --all-targets
+cargo clippy --locked -p phonebridge --all-targets --features spikes -- -D warnings && cargo test --locked -p phonebridge --features spikes
 ```
 
 CI also builds the NSIS installer (`npm run tauri build -- --bundles nsis`).
+
+### Stage 1 spikes
+
+`npm run tauri:spikes` (in `app/`) opens the spikes page: a build with the `spikes` cargo feature that normal builds
+never include. To run every phone-free spike unattended and save the numbers (keep the window visible while it runs,
+since WebView2 throttles hidden windows):
+
+```bash
+node scripts/run-spikes.mjs --build --out docs/stage1-results.json
+```
+
+`scripts/make-synthetic-fixture.mjs` regenerates the replay fixture (it needs ffmpeg with libx264).
 
 To download the pinned scrcpy-server into `app/src-tauri/binaries/` (hash-checked):
 

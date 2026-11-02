@@ -30,7 +30,7 @@ Source path abbreviations used below (all at tag `v5.0.1`, base `https://raw.git
 | `scrcpy.1` | `app/scrcpy.1` |
 | `develop.md` | `doc/develop.md` |
 
-> **Do not implement the v3.x layout** used by the original spec and `spikes/phase0` (CONFIG = bit 63, KEY = bit 62, a 12-byte codec meta). v5.0.1 uses the v4.0+ layout in sections 7–9.
+> **Do not implement the v3.x layout** used by the original spec and its Phase 0 scaffold harness (CONFIG = bit 63, KEY = bit 62, a 12-byte codec meta). v5.0.1 uses the v4.0+ layout in sections 7–9.
 
 ---
 
