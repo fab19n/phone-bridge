@@ -254,6 +254,7 @@ byte 0   byte 1   byte 2   byte 3
 - Audio streams have no session packets (`develop.md`).
 - Byte order of width/height: `develop.md` does not say. It is big-endian per `demuxer.c` (`sc_read32be`) and Java `int` writes.
 - A session packet has **no payload**. It is 12 bytes in total, the same size as a media header, and you tell them apart by bit 63.
+- Observed on a Galaxy A56 (1080x2340, Android 17): `max_size=1920` gave 886x1920 and `max_size=480` gave 220x480. Neither width is a multiple of 8 or 16, so never assume one.
 
 ---
 
@@ -337,7 +338,8 @@ How rotation is detected inside `DisplayMonitor`: UNVERIFIED (not in the files r
 
 ### 11.4 Periodic key frames
 - `SurfaceEncoder.java`: `DEFAULT_I_FRAME_INTERVAL = 10` seconds, `REPEAT_FRAME_DELAY_US = 100_000` (repeat the previous frame after 100 ms of no change), and `KEY_FRAME_RATE` = 60 as a placeholder ("does not affect the actual frame rate").
-- With a static screen, frames are produced only on change (`doc/video.md` @ v5.0.1: "a new frame is produced only when the screen content changes"), so IDRs can be sparse.
+  - Observed on a Galaxy A56: on a still screen, the server sent the first frame, repeated it every 100 ms, ten times (PTS exactly 100,000 µs apart), then nothing for the rest of the 4 s take (`fixtures/portrait-idle`). After a rotation settled, ten repeats came again, the first 116 ms after the frame before it and the other nine exactly 100,000 µs apart, then 1.35 s of silence until the next rotation (`fixtures/rotation-midstream`, landscape session; why the first came late is UNVERIFIED, perhaps a frame the `max_fps=60` cap dropped). So a still screen sends about a second of repeats, then nothing until it changes. A repeat carries data only while the encoder is still refining the image: in `portrait-idle` the repeats came straight after the key frame and sharpened it (up to 2.4 KB each at 1 Mbps) before shrinking to 35 bytes; in the landscape session the picture had already stopped changing, so each repeat was 16 bytes and changed no pixel. Ten matches `kRepeatLastFrameCount` in AOSP's `GraphicBufferSource` (UNVERIFIED: not re-read for this note).
+- With a static screen, new frames come only on change, plus the ~1 s of repeats above (`doc/video.md` @ v5.0.1: "a new frame is produced only when the screen content changes"), so IDRs can be sparse.
 - `video_codec_options=i-frame-interval:int=N`: the syntax is verified (`scrcpy.1`). The override is verified at the format level: `createFormat` sets `KEY_I_FRAME_INTERVAL = DEFAULT_I_FRAME_INTERVAL` first, and only after all defaults (bit rate, frame rate, color format/range, repeat-previous-frame, priority, latency, `max-fps-to-encoder`) loops over `codecOptions` calling `CodecUtils.setCodecOption(format, key, value)`, which for an `int` does `format.setInteger(key, value)` and overwrites `i-frame-interval` (`SurfaceEncoder.java`, `util/CodecUtils.java` @ v5.0.1). Whether a given hardware encoder honours the value is device-dependent: measure the key-frame spacing.
 
 ---
@@ -364,7 +366,7 @@ All adb traffic goes through PhoneBridge's own client for the adb server protoco
 1. `sha256(jar) == 764eb6f7…bc536`, otherwise refuse (B15).
 2. **Push** (every launch; the server deletes the JAR): connect to 5037 and send `host:transport:<serial>`, then `sync:`. Send `SEND` with `/data/local/tmp/scrcpy-server.jar,33188` (mode 0644), the file as `DATA` chunks of at most 64 KiB, then `DONE` with the mtime. Read `OKAY`, or `FAIL` plus a message, then send `QUIT`. (Sync requests are a 4-byte id plus a u32 little-endian length.)
 3. `scid = rand_u32() & 0x7FFF_FFFF`, `name = format!("scrcpy_{scid:08x}")`.
-4. **Tunnel.** *Preferred (validate in Stage 1, tests 0A and 0G):* no forward at all. Each socket is its own 5037 connection: `host:transport:<serial>`, then the device service `localabstract:<name>`. After `OKAY` the connection is a raw byte stream to the server's socket, so there are no TCP ports to pick and no forward rules to leak. *Fallback (what the official client does):* send `host-serial:<serial>:forward:norebind:tcp:0;localabstract:<name>`, then read `OKAY`, `OKAY` and the allocated port as a length-prefixed string. Record the port in the session guard **before** going on. Always use `norebind`: a plain `forward:` silently repoints an existing listener, including another session's or the official scrcpy's.
+4. **Tunnel.** *Preferred (validated in Stage 1 on a Galaxy A56, tests 0A and 0G):* no forward at all. Each socket is its own 5037 connection: `host:transport:<serial>`, then the device service `localabstract:<name>`. After `OKAY` the connection is a raw byte stream to the server's socket, so there are no TCP ports to pick and no forward rules to leak. *Fallback (what the official client does):* send `host-serial:<serial>:forward:norebind:tcp:0;localabstract:<name>`, then read `OKAY`, `OKAY` and the allocated port as a length-prefixed string. Record the port in the session guard **before** going on. Always use `norebind`: a plain `forward:` silently repoints an existing listener, including another session's or the official scrcpy's.
 5. **Launch the server.** Query `host-serial:<serial>:features`. If it lists `shell_v2`, open `host:transport:<serial>` and request `shell,v2,raw:CLASSPATH=/data/local/tmp/scrcpy-server.jar app_process / com.genymobile.scrcpy.Server 5.0.1 scid=<hex> log_level=info tunnel_forward=true audio=false ...`. Shell v2 frames are a 1-byte id plus a u32 little-endian length (1 = stdout, 2 = stderr, 3 = exit code); route them into `tracing`. Otherwise fall back to the legacy `shell:<cmd>` service, whose stdout and stderr arrive merged on one stream. Keep this shell stream open for the whole session.
 6. **Video socket**, up to 100 times: open the tunnel (preferred: the `localabstract:` transport connection; fallback: `TcpStream::connect(127.0.0.1:P)`), then `read_exact(&mut [0;1])` → OK → break; otherwise close it and sleep 100 ms. While the server is not listening yet, the preferred path gets `FAIL` (e.g. "closed") where the forward path gets connect-then-EOF: both mean "retry". Abort early on shell-stream EOF or an exit frame (a version mismatch exits fast; show its stderr).
 7. **Control socket:** open the tunnel once (no read, no retry). On the TCP fallback, also call `set_nodelay(true)` on it (as `sc_server_connect_to` does).
@@ -401,7 +403,7 @@ emit Frame { pts_us: pts, key, data };
 ### B5: dropping frames / key-frame recovery
 - Once a delta frame is dropped, drop **every** frame until the next `key` flag. Then send `RESET_VIDEO` (the single byte `0x11` on the control socket) **once** and wait for it.
 - Expect `RESET_VIDEO` to produce a new **session packet + config + key frame**, not just an IDR. The decoder-reconfigure path from B3 runs. That is correct but costs tens of ms (UNVERIFIED timing; measure in 0E).
-- Do not count on periodic IDRs. The server default is 10 s, and a static screen produces no frames at all. Optionally pass `video_codec_options=i-frame-interval:int=2` (it overrides the default in the `MediaFormat`, section 11.4; whether the device encoder honours it still needs a fixture measuring the key-frame spacing).
+- Do not count on periodic IDRs. The server default is 10 s, and a static screen stops sending frames about a second after it stops changing (section 11.4). Optionally pass `video_codec_options=i-frame-interval:int=2` (it overrides the default in the `MediaFormat`, section 11.4; whether the device encoder honours it still needs a fixture measuring the key-frame spacing).
 - Prefer render-latest-frame plus a bounded decode queue over dropping. Track `pts_us` deltas to spot decoder backlog.
 
 ### B9: launch robustness and cleanup
@@ -417,13 +419,13 @@ emit Frame { pts_us: pts, key, data };
 
 ## 14. UNVERIFIED items (summary)
 
-1. Whether `CleanUp.unlinkSelf()` deletes the JAR on every device and Android version (the code path is unconditional; failure is only logged).
+1. Whether `CleanUp.unlinkSelf()` deletes the JAR on every device and Android version (the code path is unconditional; failure is only logged). Observed on a Galaxy A56 (Android 17): when checked after the last two recording runs, `/data/local/tmp` held no `scrcpy-server.jar`.
 2. Whether a given device's hardware encoder honours a user `i-frame-interval` (the `MediaFormat` override itself is verified, section 11.4).
 3. How `DisplayMonitor` detects rotation and size changes internally (`DisplayMonitor.java` not read).
 4. That scrcpy never uses `MediaCodec.PARAMETER_KEY_REQUEST_SYNC_FRAME`. `RESET_VIDEO` is the only key-frame mechanism seen.
-5. Exactly which clock the PTS is on (the unit, microseconds, is verified). Treat it as an opaque monotonic value.
-6. "No B-frames" as a guarantee (the client assumes dts = pts).
+5. Exactly which clock the PTS is on (the unit, microseconds, is verified). Treat it as an opaque monotonic value. Observed on a Galaxy A56: it kept increasing across sessions, rotations included (`fixtures/rotation-midstream.json`).
+6. "No B-frames" as a guarantee (the client assumes dts = pts). Observed: in the three Galaxy A56 fixtures, PTS strictly increases in arrival order (`crates/scrcpy/tests/phone_fixtures.rs`).
 7. How long `RESET_VIDEO` takes to produce a key frame (measure in test 0E).
-8. Whether closing the server's shell stream (section 13, step 5) also kills the device-side server process.
+8. Whether closing the server's shell stream (section 13, step 5) also kills the device-side server process. Not tested directly: on a Galaxy A56 the server exited by itself (code 0) when the sockets closed, in all twelve sessions, and no scrcpy or `app_process` process was running when checked after the last two recording runs.
 9. AV1 config handling with WebCodecs (out of Stage 0 scope).
 10. Resolved: device → client message layouts are in `protocol/control.md` §3.

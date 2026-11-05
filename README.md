@@ -4,9 +4,10 @@ Mirror and control an Android phone from a Windows PC over USB.
 Tauri v2 desktop app (Rust backend, React + WebCodecs frontend) driving the unmodified
 [scrcpy](https://github.com/Genymobile/scrcpy) server over ADB.
 
-> Status: **Stage 1 (validation spikes)**: the phone-free spikes pass on AC power. On battery, 0C runs over its target
-> (p95 6.7–6.8 ms vs < 5 ms; 3.0–3.2 ms on AC). 0A, live 0D, 0E and 0G with a device need a phone; 0H waits on the
-> adb distribution decision.
+> Status: **Stage 1 (validation spikes)**: 0A, 0B, 0D and 0F pass, on a Galaxy A56 (Android 17) where they need a phone,
+> 0G passes with the phone attached, and 0C passes on AC power (p95 3.0–3.2 ms in four of five runs; 6.7–6.8 ms on
+> battery, over the 5 ms target). Left: 0E (glass-to-glass latency), 0G with Android Studio open, and 0H, which waits
+> on the adb distribution decision.
 > See [docs/STAGE1_RESULTS.md](docs/STAGE1_RESULTS.md) and [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
 
 ## Repository layout
@@ -64,7 +65,7 @@ since WebView2 throttles hidden windows):
 node scripts/run-spikes.mjs --build --out docs/stage1-results.json
 ```
 
-`scripts/make-synthetic-fixture.mjs` regenerates the replay fixture (it needs ffmpeg with libx264).
+`scripts/make-synthetic-fixture.mjs` regenerates the synthetic fixture, `fixtures/synthetic-rotation.bin` (it needs ffmpeg with libx264).
 
 To download the pinned scrcpy-server into `app/src-tauri/binaries/` (hash-checked):
 

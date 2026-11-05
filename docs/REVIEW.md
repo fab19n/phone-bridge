@@ -51,7 +51,7 @@ Phase 2 holds most of what makes this feel like a product (settings, error state
 
 **Fix:** use two channels. One is a typed JSON `Channel<VideoEvent>` for metadata, config-changed and stopped events. The other carries video as **raw bytes**: send `tauri::ipc::InvokeResponseBody::Raw(Vec<u8>)` (or `tauri::ipc::Response`) so it arrives as an `ArrayBuffer`. Put a small fixed binary header in front (`u8 flags | u64 pts | u64 recv_us`) and parse it in JS with a `DataView`. **Phase 0 test 0C currently measures the wrong path.** Rewrite it to test raw-byte channels.
 
-> **Measured in Stage 1 (test 0C, `docs/STAGE1_RESULTS.md`):** the finding holds (the bytes do arrive as a JSON number array), but its impact was overstated. At 60 × 50 KB/s, the JSON path still delivered every frame. Compared with raw bytes, it added 1.3–3.4 ms of p95 latency and cost 4.7–9.5× more Rust-side send time, across three 5-second runs. Raw bytes stay the design, for the CPU saving. 60 fps isn't at risk either way, though a 60-second JSON run would firm that up.
+> **Measured in Stage 1 (test 0C, `docs/STAGE1_RESULTS.md`):** the finding holds (the bytes do arrive as a JSON number array), but its impact was overstated. At 60 × 50 KB/s, the JSON path still delivered every frame. Compared with raw bytes, it cost 4.7–9.5× more Rust-side send time across five 5-second runs, and added 1.3–3.4 ms of p95 latency, except in `acRun`, whose raw run was already as slow (5.3 ms). Raw bytes stay the design, for the CPU saving. 60 fps isn't at risk either way, though a 60-second JSON run would firm that up.
 
 ### B2. 🔴 Test 0C measures the time to call `send()`, not delivery
 `phase0-tests/src-tauri/src/main.rs:314-329` times `on_event.send()` on the Rust side. That's just an enqueue. The pass criteria need **Rust-receive → JS-onmessage latency**. Fix: stamp `recv_us` in the payload and compute `performance.timeOrigin + performance.now()` minus that in JS. Report p50/p95/p99 and JS heap growth over 60 s, not 5 s.
@@ -62,6 +62,8 @@ Phase 2 holds most of what makes this feel like a product (settings, error state
 
 **Fix:** do what the official scrcpy client does. Hold the config packet and **prepend it to the next keyframe** before decoding. Also **derive the codec string from the SPS** (`avc1.` + profile_idc + constraint flags + level_idc, as hex) instead of hard-coding `avc1.640029`. Many phones encode Baseline or Main profile, or a level above 4.1 at 1920 px.
 
+> **Measured in Stage 1 (0B, 0D):** the fix works on a phone's encoder output. On a Galaxy A56 (Android 17), Rust derived `avc1.64002A` and `avc1.64001E` from the SPS (High profile, levels 4.2 and 3.0), merged each config packet into its key frame, and WebCodecs decoded all 1,189 frames of twelve sessions with 0 errors.
+
 ### B4. 🔴 The sidecar DLLs won't sit next to `adb.exe` in the installed app
 `tauri.conf.json` (`spec:234-241`) puts `adb` in `externalBin` and the DLLs in `resources` as `binaries/AdbWinApi.dll`. Tauri installs sidecars next to the main exe, but keeps resource paths relative (`$INSTDIR\binaries\...`). `adb.exe` then fails to start with a missing-DLL error, **but only in the installed build**, never in dev. Fix: use the resources *map* form (`"binaries/AdbWinApi.dll": "./"`), or ship `adb.exe` and its DLLs together as resources and launch them from Rust with `resource_dir()`. Verify this in Phase 0 (the new test 0H in the plan), not in week 6.
 
@@ -71,7 +73,7 @@ Phase 2 holds most of what makes this feel like a product (settings, error state
 ### B6. 🟠 Control inputs can arrive out of order
 `MirrorCanvas.tsx` sends every pointer event as a separate, un-awaited `invoke('send_touch')`. Tauri runs async commands concurrently on a thread pool, so `DOWN, MOVE, MOVE, UP` can reach the socket as `DOWN, UP, MOVE`. The result is stuck touches and broken swipes. Fix: each command should only **push into one `mpsc` queue** owned by a single writer task that serialises scrcpy control messages. Alternatively, use one long-lived control Channel. Add a monotonic sequence number so you can check ordering in tests.
 
-> **Measured in Stage 1 (test 0F):** it's worse than described. Fire-and-forget invokes arrive out of order for **sync** commands too: over four runs, 2–13 inversions per 1,000 events for async commands, 3–5 for sync commands, and 16–96 for batches of 16. So the order is already lost before Rust sees the events, and a Rust-side single writer can't restore it. What passed: the page keeps **one invoke in flight** and sends the events that queue up meanwhile as one batch in the next call (0 inversions in three runs, both for a 1,000-event burst and at ~190 events/s). The Rust single writer stays, for the socket side. The "control Channel" alternative doesn't exist: Tauri Channels only run from Rust to the page.
+> **Measured in Stage 1 (test 0F):** it's worse than described. Fire-and-forget invokes arrive out of order for **sync** commands too: over six runs, 2–13 inversions per 1,000 events for async commands, 2–5 for sync commands, and 16–96 for batches of 16. So the order is already lost before Rust sees the events, and a Rust-side single writer can't restore it. What passed: the page keeps **one invoke in flight** and sends the events that queue up meanwhile as one batch in the next call (0 inversions in five runs, both for a 1,000-event burst and at ~190 events/s). The Rust single writer stays, for the socket side. The "control Channel" alternative doesn't exist: Tauri Channels only run from Rust to the page.
 
 ### B7. 🟠 Touch messages are built in the wrong coordinate space and miss required fields
 The scrcpy `INJECT_TOUCH_EVENT` message expects the position **plus the video frame size it was computed against** (`screen_width/height`), a pointer id, pressure and action buttons. The server rejects or rescales events whose frame size doesn't match the current one, for example during rotation. `coordinates.ts` maps to a "device size" from metadata that goes stale after the first rotation. It also ignores the `object-fit: contain` letterbox, so taps drift off-target when the window aspect doesn't match. Fix: map to the **current decoded frame size**, account for the letterbox rect, and send that frame size with every event.
@@ -88,12 +90,16 @@ In `phase0-tests/src-tauri/src/main.rs:143-191`:
 - Windows: `std::process::Command` opens a **console window for every adb call** in release builds. Set `CREATE_NO_WINDOW` (`creation_flags(0x08000000)`).
 - `Cargo.toml` (`spec:175-188`) lacks `rand` and `serde_bytes`, which the code uses. It won't compile.
 
+> **Measured in Stage 1 (0A):** on the phone, the first launch listened only after 1.17 s (11 connect attempts), so a fixed sleep would indeed have failed; the retry loop handled it. PhoneBridge opens the sockets over `localabstract:`, so there's no port or forward to leak, it drains the server's shell stream, and the server exited with code 0 in all twelve sessions. When checked after the last two recording runs, no jar was left in `/data/local/tmp` and no server process was running.
+
 ### B10. 🟠 Bundling ADB can break Android Studio. "Use the existing server" isn't a strategy.
 If PhoneBridge's `adb` client version differs from the running ADB server (Android Studio, scrcpy, Samsung tools), adb prints "server version doesn't match this client; killing..." and **restarts the server**. That breaks the developer's IDE session, and then the IDE restarts it back. Decide on one of these:
 (a) Talk to the ADB server **directly over its TCP protocol (port 5037)**. This works with any server version. Spawn your bundled adb only when no server is running.
 (b) Run a **private server on a different port** (`ANDROID_ADB_SERVER_PORT`). This is isolated, but two servers then compete for the USB device, which causes problems on Windows.
 (c) Prefer the user's adb on PATH, if one exists.
 I recommend (a) plus `host:track-devices` for push-based device events. That replaces the 2-second `adb devices` polling (`spec:742-782`), which also blocks a tokio worker on a synchronous process spawn.
+
+> **Measured in Stage 1 (0G):** option (a) works. In every run that recorded the adb server's process id (`final`, `batteryRun`'s adb spike, the five AC runs and the five phone runs, twelve phone sessions in all), it was the same server (PID 42004) before and after, so PhoneBridge's TCP 5037 client never restarted it. Not yet tried with Android Studio open.
 
 ### B11. 🟠 Companion pairing has no security properties (and a manifest crash)
 - `PairingManager.kt` sends a **random UUID as the "public key"**. There's no challenge, no signature and no key agreement. Anything that can talk to the socket can "pair".
@@ -118,6 +124,8 @@ The spec defines `ConnectionState` in Rust (good, D8). The scaffold also keeps a
 - Keyboard: `Escape`→Back works, but there's no Ctrl+V clipboard paste, no meta-state for shortcuts, and every printable key goes through `INJECT_TEXT`, which is slow and breaks in some IMEs.
 - **Rotation:** scrcpy sends a new config packet and size when the device rotates. The decoder has to re-read the SPS, and the canvas and coordinate mapping have to follow. Neither the spec nor the tests cover this.
 - D7 says the min API is 29 "for AudioPlaybackCapture". scrcpy's audio capture needs **Android 11 (API 30)**, and mirroring alone works far below 29. Re-justify the floor (for the desktop app it should be whatever scrcpy supports).
+
+> **Measured in Stage 1 (0D):** rotation is covered now. A live rotation to landscape and back gave three sessions, each with a new config packet and key frame, and the decoder and canvas followed with 0 errors. `fixtures/rotation-midstream.bin` replays it in CI.
 
 ### B15. 🟡 Spec and scaffold housekeeping
 - The table of contents (`spec:10-20`) lists sections that don't exist (*Sidecar Bundling*, *scrcpy Protocol Integration*), and the numbering doesn't match the body.

@@ -1,0 +1,1057 @@
+{
+  "mirror": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "ac",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "mirror": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 11,
+        "connectMs": 1167,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              886,
+              1920
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64002A"
+          ],
+          "frames": 39,
+          "keyFrames": 1,
+          "payloadBytes": 288998,
+          "messagesSent": 40,
+          "elapsedMs": 10013
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": null,
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 40,
+        "frames": 39,
+        "decoded": 39,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 886,
+            "height": 1920,
+            "codec": "avc1.64002A"
+          }
+        ],
+        "frameSizes": [
+          "886x1920"
+        ],
+        "canvas": "886x1920",
+        "decodeMs": {
+          "n": 39,
+          "mean": 1.09,
+          "p50": 0.7,
+          "p95": 1.6,
+          "p99": 14.3,
+          "max": 14.3
+        },
+        "deliveryMs": {
+          "n": 40,
+          "mean": 1.49,
+          "p50": 0.83,
+          "p95": 4.95,
+          "p99": 5.83,
+          "max": 5.83
+        }
+      }
+    },
+    "retainedHeap": {
+      "before": {
+        "usedMb": 1.2,
+        "arrayBufferMb": 0.2
+      },
+      "after": {
+        "usedMb": 1.4,
+        "arrayBufferMb": 0.2
+      }
+    },
+    "pageErrors": [],
+    "adbServer": {
+      "pidsBefore": [
+        42004
+      ],
+      "pidsAfter": [
+        42004
+      ],
+      "untouched": true
+    }
+  },
+  "recording1": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "ac",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "portrait-idle": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 7,
+        "connectMs": 705,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 70,
+          "keyFrames": 1,
+          "payloadBytes": 112808,
+          "messagesSent": 71,
+          "elapsedMs": 4000
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\portrait-idle.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 71,
+        "frames": 70,
+        "decoded": 70,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 70,
+          "mean": 0.85,
+          "p50": 0.4,
+          "p95": 0.6,
+          "p99": 15.8,
+          "max": 15.8
+        },
+        "deliveryMs": {
+          "n": 71,
+          "mean": 1.52,
+          "p50": 1.94,
+          "p95": 2.78,
+          "p99": 5.54,
+          "max": 5.54
+        }
+      }
+    },
+    "rotation-midstream": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 4,
+        "connectMs": 369,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ],
+            [
+              480,
+              220
+            ],
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E",
+            "avc1.64001E",
+            "avc1.64001E"
+          ],
+          "frames": 121,
+          "keyFrames": 3,
+          "payloadBytes": 300788,
+          "messagesSent": 124,
+          "elapsedMs": 8005
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\rotation-midstream.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 124,
+        "frames": 121,
+        "decoded": 121,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 480,
+            "height": 220,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480",
+          "480x220",
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 121,
+          "mean": 0.95,
+          "p50": 0.4,
+          "p95": 1.6,
+          "p99": 14,
+          "max": 16
+        },
+        "deliveryMs": {
+          "n": 124,
+          "mean": 2.01,
+          "p50": 2.11,
+          "p95": 2.94,
+          "p99": 3.47,
+          "max": 3.47
+        }
+      }
+    },
+    "high-motion": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 5,
+        "connectMs": 454,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 88,
+          "keyFrames": 1,
+          "payloadBytes": 131297,
+          "messagesSent": 89,
+          "elapsedMs": 5010
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\high-motion.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 89,
+        "frames": 88,
+        "decoded": 88,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 88,
+          "mean": 0.58,
+          "p50": 0.4,
+          "p95": 0.6,
+          "p99": 12,
+          "max": 12
+        },
+        "deliveryMs": {
+          "n": 89,
+          "mean": 1.54,
+          "p50": 1.98,
+          "p95": 2.66,
+          "p99": 2.89,
+          "max": 2.89
+        }
+      }
+    },
+    "retainedHeap": {
+      "before": {
+        "usedMb": 1.2,
+        "arrayBufferMb": 0.2
+      },
+      "after": {
+        "usedMb": 1.4,
+        "arrayBufferMb": 0.2
+      }
+    },
+    "pageErrors": [],
+    "adbServer": {
+      "pidsBefore": [
+        42004
+      ],
+      "pidsAfter": [
+        42004
+      ],
+      "untouched": true
+    }
+  },
+  "recording2": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "ac",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "portrait-idle": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 6,
+        "connectMs": 565,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 67,
+          "keyFrames": 1,
+          "payloadBytes": 111939,
+          "messagesSent": 68,
+          "elapsedMs": 4012
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\portrait-idle.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 68,
+        "frames": 67,
+        "decoded": 67,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 67,
+          "mean": 0.62,
+          "p50": 0.4,
+          "p95": 0.5,
+          "p99": 14.9,
+          "max": 14.9
+        },
+        "deliveryMs": {
+          "n": 68,
+          "mean": 1.58,
+          "p50": 2.02,
+          "p95": 2.48,
+          "p99": 4.64,
+          "max": 4.64
+        }
+      }
+    },
+    "high-motion": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 4,
+        "connectMs": 364,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 275,
+          "keyFrames": 1,
+          "payloadBytes": 615495,
+          "messagesSent": 276,
+          "elapsedMs": 5003
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\high-motion.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 276,
+        "frames": 275,
+        "decoded": 275,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 275,
+          "mean": 0.46,
+          "p50": 0.4,
+          "p95": 0.6,
+          "p99": 1.2,
+          "max": 10.6
+        },
+        "deliveryMs": {
+          "n": 276,
+          "mean": 2.2,
+          "p50": 2.14,
+          "p95": 2.82,
+          "p99": 3.21,
+          "max": 3.73
+        }
+      }
+    },
+    "retainedHeap": {
+      "before": {
+        "usedMb": 1.2,
+        "arrayBufferMb": 0.2
+      },
+      "after": {
+        "usedMb": 1.4,
+        "arrayBufferMb": 0.2
+      }
+    },
+    "pageErrors": [],
+    "adbServer": {
+      "pidsBefore": [
+        42004
+      ],
+      "pidsAfter": [
+        42004
+      ],
+      "untouched": true
+    }
+  },
+  "recording3": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "battery",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "portrait-idle": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 8,
+        "connectMs": 792,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 22,
+          "keyFrames": 1,
+          "payloadBytes": 21185,
+          "messagesSent": 23,
+          "elapsedMs": 4011
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\portrait-idle.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 23,
+        "frames": 22,
+        "decoded": 22,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 22,
+          "mean": 2.15,
+          "p50": 0.7,
+          "p95": 1.1,
+          "p99": 32.2,
+          "max": 32.2
+        },
+        "deliveryMs": {
+          "n": 23,
+          "mean": 2.95,
+          "p50": 0.8,
+          "p95": 6.25,
+          "p99": 16.5,
+          "max": 16.5
+        }
+      }
+    },
+    "rotation-midstream": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 4,
+        "connectMs": 367,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ],
+            [
+              480,
+              220
+            ],
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E",
+            "avc1.64001E",
+            "avc1.64001E"
+          ],
+          "frames": 97,
+          "keyFrames": 3,
+          "payloadBytes": 114180,
+          "messagesSent": 100,
+          "elapsedMs": 8004
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\rotation-midstream.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 100,
+        "frames": 97,
+        "decoded": 97,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 480,
+            "height": 220,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480",
+          "480x220",
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 97,
+          "mean": 1.96,
+          "p50": 0.6,
+          "p95": 15.7,
+          "p99": 30.4,
+          "max": 30.4
+        },
+        "deliveryMs": {
+          "n": 100,
+          "mean": 2.43,
+          "p50": 2.53,
+          "p95": 4.71,
+          "p99": 6.12,
+          "max": 8.29
+        }
+      }
+    },
+    "high-motion": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 5,
+        "connectMs": 439,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 13,
+          "keyFrames": 1,
+          "payloadBytes": 20578,
+          "messagesSent": 14,
+          "elapsedMs": 5014
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\high-motion.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 14,
+        "frames": 13,
+        "decoded": 13,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 13,
+          "mean": 2.71,
+          "p50": 1,
+          "p95": 23.1,
+          "p99": 23.1,
+          "max": 23.1
+        },
+        "deliveryMs": {
+          "n": 14,
+          "mean": 3.51,
+          "p50": 3.99,
+          "p95": 6.08,
+          "p99": 6.08,
+          "max": 6.08
+        }
+      }
+    },
+    "retainedHeap": {
+      "before": {
+        "usedMb": 1.2,
+        "arrayBufferMb": 0.2
+      },
+      "after": {
+        "usedMb": 1.4,
+        "arrayBufferMb": 0.2
+      }
+    },
+    "pageErrors": [],
+    "adbServer": {
+      "pidsBefore": [
+        42004
+      ],
+      "pidsAfter": [
+        42004
+      ],
+      "untouched": true
+    }
+  },
+  "recording4": {
+    "exe": "C:\\GitHub\\bridge\\target\\release\\phonebridge.exe",
+    "power": "ac",
+    "build": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36 Edg/156.0.0.0",
+    "portrait-idle": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 5,
+        "connectMs": 459,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 11,
+          "keyFrames": 1,
+          "payloadBytes": 20245,
+          "messagesSent": 12,
+          "elapsedMs": 4009
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\portrait-idle.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 12,
+        "frames": 11,
+        "decoded": 11,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 11,
+          "mean": 1.57,
+          "p50": 0.4,
+          "p95": 13.6,
+          "p99": 13.6,
+          "max": 13.6
+        },
+        "deliveryMs": {
+          "n": 12,
+          "mean": 2.34,
+          "p50": 2.03,
+          "p95": 7.58,
+          "p99": 7.58,
+          "max": 7.58
+        }
+      }
+    },
+    "rotation-midstream": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 5,
+        "connectMs": 459,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ],
+            [
+              480,
+              220
+            ],
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E",
+            "avc1.64001E",
+            "avc1.64001E"
+          ],
+          "frames": 93,
+          "keyFrames": 3,
+          "payloadBytes": 121996,
+          "messagesSent": 96,
+          "elapsedMs": 8001
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\rotation-midstream.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 96,
+        "frames": 93,
+        "decoded": 93,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 480,
+            "height": 220,
+            "codec": "avc1.64001E"
+          },
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480",
+          "480x220",
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 93,
+          "mean": 0.94,
+          "p50": 0.4,
+          "p95": 7.2,
+          "p99": 13.7,
+          "max": 13.7
+        },
+        "deliveryMs": {
+          "n": 96,
+          "mean": 1.49,
+          "p50": 1.95,
+          "p95": 2.5,
+          "p99": 3.14,
+          "max": 3.14
+        }
+      }
+    },
+    "high-motion": {
+      "rust": {
+        "serial": "(redacted)",
+        "deviceName": "SM-A566B",
+        "connectAttempts": 5,
+        "connectMs": 479,
+        "stream": {
+          "codec": "H264",
+          "sessions": [
+            [
+              220,
+              480
+            ]
+          ],
+          "decoderConfigs": [
+            "avc1.64001E"
+          ],
+          "frames": 293,
+          "keyFrames": 1,
+          "payloadBytes": 614576,
+          "messagesSent": 294,
+          "elapsedMs": 5011
+        },
+        "serverLog": [
+          "[server] INFO: Device: [samsung] samsung SM-A566B (Android 17)"
+        ],
+        "serverExit": 0,
+        "recordedTo": "C:\\GitHub\\bridge\\app\\src-tauri/../../fixtures\\local\\high-motion.bin",
+        "adbPidsBefore": [
+          42004
+        ],
+        "adbPidsAfter": [
+          42004
+        ],
+        "serverUntouched": true
+      },
+      "page": {
+        "messages": 294,
+        "frames": 293,
+        "decoded": 293,
+        "skipped": 0,
+        "errorCount": 0,
+        "errors": [],
+        "configs": [
+          {
+            "width": 220,
+            "height": 480,
+            "codec": "avc1.64001E"
+          }
+        ],
+        "frameSizes": [
+          "220x480"
+        ],
+        "canvas": "220x480",
+        "decodeMs": {
+          "n": 293,
+          "mean": 0.46,
+          "p50": 0.4,
+          "p95": 0.5,
+          "p99": 0.9,
+          "max": 11
+        },
+        "deliveryMs": {
+          "n": 294,
+          "mean": 2.02,
+          "p50": 2,
+          "p95": 2.35,
+          "p99": 2.66,
+          "max": 3.12
+        }
+      }
+    },
+    "retainedHeap": {
+      "before": {
+        "usedMb": 1.2,
+        "arrayBufferMb": 0.2
+      },
+      "after": {
+        "usedMb": 1.4,
+        "arrayBufferMb": 0.2
+      }
+    },
+    "pageErrors": [],
+    "adbServer": {
+      "pidsBefore": [
+        42004
+      ],
+      "pidsAfter": [
+        42004
+      ],
+      "untouched": true
+    }
+  }
+}
