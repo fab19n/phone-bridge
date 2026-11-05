@@ -1,0 +1,20 @@
+{
+  "describedBy": "scripts/describe-fixture.mjs",
+  "description": "Phone recording: portrait, nothing moving. The server sends the first frame, repeats it every 100 ms ten times, then sends nothing for the rest of the 4 s take. Recorded with scripts/run-spikes.mjs --record (max_size=480, max_fps=60, video_bit_rate=1000000), on Settings → Display with Do Not Disturb on.",
+  "device": "Samsung Galaxy A56 5G (SM-A566B), Android 17 (API 37), scrcpy-server 5.0.1",
+  "codecId": "h264",
+  "sessions": [
+    {
+      "width": 220,
+      "height": 480,
+      "codec": "avc1.64001E",
+      "configs": 1,
+      "frames": 11,
+      "keyFrames": 1,
+      "firstPtsUs": 151698969616,
+      "lastPtsUs": 151699969616
+    }
+  ],
+  "totalFrames": 11,
+  "totalBytes": 20405
+}

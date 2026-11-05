@@ -1,0 +1,40 @@
+{
+  "describedBy": "scripts/describe-fixture.mjs",
+  "description": "Phone recording: portrait, rotated to landscape and back (three sessions). In landscape the screen settles into ten repeats (the first 116 ms after the frame before it, the rest 100 ms apart), then 1.35 s of silence before the rotation back. Recorded with scripts/run-spikes.mjs --record (max_size=480, max_fps=60, video_bit_rate=1000000), on Settings → Display with Do Not Disturb on.",
+  "device": "Samsung Galaxy A56 5G (SM-A566B), Android 17 (API 37), scrcpy-server 5.0.1",
+  "codecId": "h264",
+  "sessions": [
+    {
+      "width": 220,
+      "height": 480,
+      "codec": "avc1.64001E",
+      "configs": 1,
+      "frames": 9,
+      "keyFrames": 1,
+      "firstPtsUs": 151711266162,
+      "lastPtsUs": 151711933094
+    },
+    {
+      "width": 480,
+      "height": 220,
+      "codec": "avc1.64001E",
+      "configs": 1,
+      "frames": 41,
+      "keyFrames": 1,
+      "firstPtsUs": 151712118823,
+      "lastPtsUs": 151714971407
+    },
+    {
+      "width": 220,
+      "height": 480,
+      "codec": "avc1.64001E",
+      "configs": 1,
+      "frames": 43,
+      "keyFrames": 1,
+      "firstPtsUs": 151715123367,
+      "lastPtsUs": 151716703530
+    }
+  ],
+  "totalFrames": 93,
+  "totalBytes": 123188
+}

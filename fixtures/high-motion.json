@@ -1,0 +1,20 @@
+{
+  "describedBy": "scripts/describe-fixture.mjs",
+  "description": "Phone recording: portrait, scrolled up and down for the whole take, at the 60 fps and 1 Mbps caps. Recorded with scripts/run-spikes.mjs --record (max_size=480, max_fps=60, video_bit_rate=1000000), on Settings → Display with Do Not Disturb on.",
+  "device": "Samsung Galaxy A56 5G (SM-A566B), Android 17 (API 37), scrcpy-server 5.0.1",
+  "codecId": "h264",
+  "sessions": [
+    {
+      "width": 220,
+      "height": 480,
+      "codec": "avc1.64001E",
+      "configs": 1,
+      "frames": 293,
+      "keyFrames": 1,
+      "firstPtsUs": 151727513824,
+      "lastPtsUs": 151732431774
+    }
+  ],
+  "totalFrames": 293,
+  "totalBytes": 618120
+}
